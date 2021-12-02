@@ -9,9 +9,11 @@ import com.example.mvvmcrudtutorial.databinding.ListItemBinding
 import com.example.mvvmcrudtutorial.db.Subscriber
 
 class MyRecyclerViewAdapter(
-    private val subscriberList: List<Subscriber>,
+
     private val clickListener: (Subscriber) -> Unit
 ) : Adapter<MyViewHolder>() {
+    private val subscribersList = ArrayList<Subscriber>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding: ListItemBinding =
@@ -20,13 +22,17 @@ class MyRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(subscriberList[position], clickListener)
+        holder.bind(subscribersList[position], clickListener)
     }
 
     override fun getItemCount(): Int {
-        return subscriberList.size
+        return subscribersList.size
     }
 
+    fun setList(subscribers: List<Subscriber>){
+        subscribersList.clear()
+        subscribersList.addAll(subscribers)
+    }
 }
 
 class MyViewHolder(val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
