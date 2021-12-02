@@ -1,5 +1,6 @@
 package com.example.mvvmcrudtutorial
 
+import android.util.Patterns
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.lifecycle.LiveData
@@ -40,17 +41,26 @@ class SubscriberViewModel(private val repository: SubscriberRepository) : ViewMo
     }
 
     fun saveOrUpdate() {
-        if (isUpdateOrDelete) {
-            subscriberToUpdateOrDelete.name = inputName.value!!
-            subscriberToUpdateOrDelete.email = inputEmail.value!!
-            update(subscriberToUpdateOrDelete)
+
+        if(inputName.value == null){
+            statusMessage.value = Event("Please enter subscriber's name")
+        } else if(inputEmail.value == null){
+            statusMessage.value = Event("Please enter subscriber's email")
+        }else if(!Patterns.EMAIL_ADDRESS.matcher(inputEmail.value!!).matches()){
+            statusMessage.value = Event("Please enter a correct email address")
         } else {
-            val name = inputName.value!!
-            val email = inputEmail.value!!
-            // 0 as id because the id is auto-incremental and room ignore the value 0 for all the subscriber
-            insert(Subscriber(0, name, email))
-            inputName.value = null
-            inputEmail.value = null
+            if (isUpdateOrDelete) {
+                subscriberToUpdateOrDelete.name = inputName.value!!
+                subscriberToUpdateOrDelete.email = inputEmail.value!!
+                update(subscriberToUpdateOrDelete)
+            } else {
+                val name = inputName.value!!
+                val email = inputEmail.value!!
+                // 0 as id because the id is auto-incremental and room ignore the value 0 for all the subscriber
+                insert(Subscriber(0, name, email))
+                inputName.value = null
+                inputEmail.value = null
+            }
         }
     }
 
